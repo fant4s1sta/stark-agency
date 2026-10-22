@@ -1,0 +1,45 @@
+{
+  "name": "stark-agency",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npm run build && electron-forge start",
+    "dev": "npm run start",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node scripts/check.mjs && npm run typecheck",
+    "test:browser": "playwright test",
+    "start:web": "node server.mjs",
+    "dev:web": "node --watch server.mjs",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "package": "npm run build && electron-forge package",
+    "make": "npm run build && electron-forge make",
+    "test:desktop": "npm run build && playwright test --config playwright.desktop.config.mjs"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "description": "以斯塔克实验室为灵感的多 AI 伙伴像素办公室，支持本地 Codex 协作与任务记录。",
+  "dependencies": {
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^8.0.1",
+    "@electron-forge/maker-deb": "^8.0.1",
+    "@electron-forge/maker-squirrel": "^8.0.1",
+    "@electron-forge/maker-zip": "^8.0.1",
+    "@playwright/test": "1.56.1",
+    "@types/node": "^26.6.5",
+    "electron": "^45.0.0",
+    "typescript": "^7.0.2"
+  },
+  "productName": "Stark Agency",
+  "main": "dist/main/index.js",
+  "author": {
+    "name": "Stark Agency contributors"
+  },
+  "config": {
+    "forge": "./forge.config.cjs"
+  }
+}

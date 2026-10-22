@@ -1,0 +1,33 @@
+.scene-viewport{aspect-ratio:832/576;overflow:auto;background:#d5d9c5;scrollbar-width:thin;position:relative}
+.scene{width:100%;height:auto;min-height:0;aspect-ratio:832/576;position:relative;overflow:visible;isolation:isolate}
+#office-game{display:block;width:100%;height:100%;image-rendering:pixelated;outline-offset:-4px;position:absolute;inset:0;touch-action:manipulation}
+#actors{position:absolute;inset:0;pointer-events:none}
+.actor.game-actor{position:absolute;width:5.77%;height:10.42%;transform:translate(-50%,-95%);border:0;background:none;padding:0;pointer-events:auto;border-radius:0;box-shadow:none;transition:none}
+.game-actor:hover,.game-actor.is-selected{background:none;box-shadow:none;filter:none}
+
+
+
+.game-actor .speech{bottom:110%;top:auto;left:50%;transform:translateX(-50%);min-width:125px;max-width:190px;font-size:11px;line-height:1.6;pointer-events:none;white-space:normal;z-index:2}
+.scene-mode{top:8px;right:9px;pointer-events:none;font-size:10px;padding:5px 8px}
+.scene-location{bottom:9px;left:4%;font-size:8px;pointer-events:none;letter-spacing:1px;background:none;color:#596752}
+.game-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 17px;border-top:1px solid #e9e6dc;color:#858879;font-size:11px;background:#f8f7f0}
+.game-bar>div{display:flex;gap:7px;flex-shrink:0}.game-bar button{font-size:11px;padding:5px 8px;border:1px solid #d9dfd0;border-radius:5px;background:#f2f4e9;color:#596d59}
+.agent-avatar canvas,.profile-portrait canvas{image-rendering:pixelated}
+@media(max-width:560px){.scene{width:100%}.scene-viewport{aspect-ratio:832/576}.game-bar{align-items:flex-start;flex-direction:column;padding:10px 12px;gap:6px}.scene-location{font-size:6px;bottom:5px}.scene-mode{font-size:8px;padding:3px 5px}.game-actor .speech{min-width:100px;max-width:130px;font-size:10px}}
+
+
+
+
+.game-actor:focus-visible{outline:2px solid #f6e8ac;outline-offset:2px}
+/* The 3D camera controls zoom; the scene itself keeps a fixed viewport. */
+.scene:has(.is-3d),.scene.is-3d{width:100%;overflow:hidden}
+.scene-viewport:has(.is-3d){overflow:hidden;background:#e7ebdf;aspect-ratio:1.35}
+.scene.is-3d{aspect-ratio:1.35;height:100%}
+.is-3d #office-game{image-rendering:auto;touch-action:none;cursor:grab}
+.is-3d #office-game:active{cursor:grabbing}
+.is-3d .game-actor{width:20px;height:12px;transform:translate(-50%,-100%);pointer-events:none}
+.is-3d .game-actor .speech{bottom:100%;background:#fffdf2f2;box-shadow:0 4px 18px #455b4520;border:1px solid #d9dfcd;border-radius:10px}
+.is-3d .scene-location{font-size:8px;bottom:14px;color:#6a7c69;letter-spacing:1.5px}
+.agent-avatar canvas,.profile-portrait canvas,.roster canvas{image-rendering:auto}
+.game-bar{flex-wrap:wrap}.game-bar>div{flex-wrap:wrap}.scene-controls{gap:5px}
+@media(max-width:560px){.scene-viewport:has(.is-3d),.scene.is-3d{aspect-ratio:1.05}.is-3d .scene-location{font-size:6px;letter-spacing:.5px}.game-bar>div{gap:5px}}

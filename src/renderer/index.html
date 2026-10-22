@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f4ee"><meta name="description" content="Stark Agency：七位 AI 伙伴，一个会工作的 3D 微缩工作室。">
+  <title>Stark Agency</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Crect%20width%3D%2240%22%20height%3D%2240%22%20rx%3D%2210%22%20fill%3D%22%233e6255%22%2F%3E%3Cpath%20d%3D%22M28%2012H17a5%205%200%200%200%200%2010h6a3%203%200%200%201%200%206H11%22%20fill%3D%22none%22%20stroke%3D%22%23f6f4ee%22%20stroke-width%3D%225%22%2F%3E%3C%2Fsvg%3E">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/game.css">
+  <script type="importmap">{"imports":{"three":"/vendor/three.module.js","three/addons/controls/OrbitControls.js":"/vendor/OrbitControls.js","three/addons/geometries/RoundedBoxGeometry.js":"/vendor/RoundedBoxGeometry.js"}}</script>
+</head>
+<body>
+  <aside class="rail" aria-label="导航">
+    <a class="brand-mark" href="/" aria-label="Stark Agency 首页">s<span>·</span></a>
+    <div class="rail-line"></div>
+    <button class="rail-button selected" data-view="office" title="办公室" aria-label="办公室">▦</button>
+    <button class="rail-button" data-view="tasks" title="任务记录" aria-label="任务记录">▤</button>
+    <button class="rail-button" data-view="team" title="团队成员" aria-label="团队成员">♧</button>
+    <div class="rail-bottom"><button class="rail-button" id="settings" title="连接设置" aria-label="连接设置">⚙</button><div class="you-avatar" title="你 · 办公室主人">Y</div></div>
+  </aside>
+  <div class="shell">
+    <header class="topbar"><a href="/" class="wordmark">Stark Agency<span class="wordmark-divider">/</span><span class="topbar-label">你的 AI 办公室</span></a><div class="topbar-right"><span class="local-label"><i></i> 本地空间</span><button class="text-button" id="about">关于这个空间 ↗</button></div></header>
+    <main>
+      <section class="page-heading"><div><div class="eyebrow">A LITTLE OFFICE. A LOT OF POSSIBILITY.</div><h1>好想法，在这里一起发生<span class="heading-dot">.</span></h1><p>七位 AI 伙伴，各有所长。把目标交给他们，看见协作的每一步。</p></div><div class="office-time"><span id="clock">22:00</span><div><i class="sun-icon">☀</i> <span id="date">星期五 · 10 月 16 日</span></div></div></section>
+      <div class="workspace">
+        <section class="office-panel">
+          <div class="panel-toolbar"><div class="panel-title"><span class="tiny-square"></span><h2>办公室</h2><span class="count-label">7 位伙伴</span></div><div class="scene-controls"><button id="life-toggle" class="subtle-button" aria-pressed="false">Ⅱ 暂停生活</button><span class="toolbar-divider"></span><button id="zoom-out" class="icon-button" aria-label="缩小办公室">−</button><span id="zoom-value">100%</span><button id="zoom-in" class="icon-button" aria-label="放大办公室">+</button></div></div>
+          <div class="scene-viewport" id="scene-viewport"><div class="scene" id="scene"><canvas id="office-game" tabindex="0" aria-label="3D 工作室：拖动旋转，滚轮或双指缩放，点击角色或家具互动"></canvas><div id="actors"></div><div class="scene-location">⌖ STARK AGENCY HQ <span>·</span> MINIATURE STUDIO · 3D</div><div class="scene-mode" id="scene-mode"><i></i> 演示空间</div></div></div>
+          <div class="scene-footer"><span><i class="status-dot"></i><span id="office-status">伙伴们正在享受办公室时光</span></span><span class="scene-hint">立体工作室 · 自主生活</span></div>
+          <div class="game-bar"><span id="game-hint">拖动旋转 · 滚轮缩放 · 点击伙伴或家具互动</span><div><button id="reset-camera" class="subtle-button">⌖ 复位视角</button><button id="gather" class="subtle-button">♧ 召集讨论</button><button id="go-home" class="subtle-button">⌂ 回到工位</button></div></div>
+          <div class="roster" id="roster" aria-label="选择角色"></div>
+        </section>
+        <aside class="inspector">
+          <div class="inspector-heading"><h2>办公室动态</h2><span class="live-pill"><i></i> LIVE</span></div>
+          <div class="tabs" role="tablist" aria-label="办公室面板"><button class="tab active" role="tab" aria-selected="true" data-tab="feed">协作动态</button><button class="tab" role="tab" aria-selected="false" data-tab="profile">伙伴档案</button><button class="tab" role="tab" aria-selected="false" data-tab="tasks">任务 <span id="task-count">0</span></button></div>
+          <div id="panel-content" class="panel-content" aria-live="polite"></div>
+          <div class="inspector-bottom"><span class="small-spark">✧</span><p>一个目标，多种视角。<br><strong>让每个想法都有回应。</strong></p></div>
+        </aside>
+      </div>
+      <section class="task-composer"><div class="composer-heading"><div><span class="spark-icon">✧</span><h2>今天，一起做点什么？</h2></div><div class="mode-switch" role="group" aria-label="执行模式"><button id="demo-mode" class="active" aria-pressed="true">◌ 演示</button><button id="live-mode" aria-pressed="false">⌘ Codex</button></div></div><form id="task-form"><label class="sr-only" for="task-input">给团队的任务</label><textarea id="task-input" maxlength="6000" rows="2" placeholder="告诉 Vision 你的目标，比如：做一个记录每日灵感的小工具…"></textarea><div class="composer-bottom"><span id="mode-description"><i class="status-dot amber"></i> 演示模式 · 体验协作流程，不调用模型</span><button type="submit" class="primary-button" id="submit-task">交给团队 <span>↗</span></button></div></form><div class="prompt-suggestions"><span>试试这些</span><button data-prompt="制作一个可以添加、搜索和删除灵感的本地灵感记录工具，界面简洁，支持浏览器保存数据。">✧ 做个灵感记录工具</button><button data-prompt="为这个工作空间撰写一份清晰的项目介绍和功能路线图，保存成 Markdown 文件。">▤ 整理项目介绍</button><button data-prompt="制作一个可以计时、暂停和重置的番茄钟网页，提供清晰的使用说明。">◷ 做一个番茄钟</button></div></section>
+      <footer class="page-footer"><span>MADE FOR IDEAS, BUILT FOR TOGETHER.</span><span>Stark Agency <span class="footer-dot">·</span> v0.1 本地预览</span></footer>
+    </main>
+  </div>
+  <dialog id="modal"><div class="modal-head"><div><div class="eyebrow">YOUR LITTLE WORKSPACE</div><h2 id="modal-title"></h2></div><button id="modal-close" class="icon-button" aria-label="关闭">×</button></div><div id="modal-body"></div></dialog>
+  <div id="toast" role="status" class="toast"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

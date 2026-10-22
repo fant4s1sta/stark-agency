@@ -1,0 +1,21 @@
+# 依赖与本地运行数据
+node_modules/
+.runtime/
+
+# 环境配置与日志
+.env
+.env.*
+!.env.example
+*.log
+
+# 本地预览与系统文件
+output/
+.DS_Store
+
+# 浏览器测试产物
+test-results/
+playwright-report/
+
+# 桌面构建产物
+dist/
+out/
