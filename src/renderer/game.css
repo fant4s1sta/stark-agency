@@ -13,7 +13,7 @@
 .game-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 17px;border-top:1px solid #e9e6dc;color:#858879;font-size:11px;background:#f8f7f0}
 .game-bar>div{display:flex;gap:7px;flex-shrink:0}.game-bar button{font-size:11px;padding:5px 8px;border:1px solid #d9dfd0;border-radius:5px;background:#f2f4e9;color:#596d59}
 .agent-avatar canvas,.profile-portrait canvas{image-rendering:pixelated}
-@media(max-width:560px){.scene{width:100%}.scene-viewport{aspect-ratio:832/576}.game-bar{align-items:flex-start;flex-direction:column;padding:10px 12px;gap:6px}.scene-location{font-size:6px;bottom:5px}.scene-mode{font-size:8px;padding:3px 5px}.game-actor .speech{min-width:100px;max-width:130px;font-size:10px}}
+
 
 
 
@@ -30,4 +30,3 @@
 .is-3d .scene-location{font-size:8px;bottom:14px;color:#6a7c69;letter-spacing:1.5px}
 .agent-avatar canvas,.profile-portrait canvas,.roster canvas{image-rendering:auto}
 .game-bar{flex-wrap:wrap}.game-bar>div{flex-wrap:wrap}.scene-controls{gap:5px}
-@media(max-width:560px){.scene-viewport:has(.is-3d),.scene.is-3d{aspect-ratio:1.05}.is-3d .scene-location{font-size:6px;letter-spacing:.5px}.game-bar>div{gap:5px}}

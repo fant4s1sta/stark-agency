@@ -52,7 +52,7 @@ class OfficeView {
     this.room=createRoom(this.scene);this.camera=new T.OrthographicCamera(-16,16,11,-11,.1,120);
     this.controls=new OrbitControls(this.camera,this.canvas);this.controls.enableDamping=true;this.controls.dampingFactor=.09;this.controls.enablePan=false;this.controls.minPolarAngle=.22;this.controls.maxPolarAngle=Math.PI*.46;this.controls.minZoom=.65;this.controls.maxZoom=2.8;this.controls.rotateSpeed=.65;this.controls.zoomSpeed=.9;
     this.controls.touches.ONE=T.TOUCH.ROTATE;this.controls.touches.TWO=T.TOUCH.DOLLY_ROTATE;
-    this.camera.position.set(14,22,28);this.controls.target.set(0,.15,0);this.controls.update();this.controls.saveState();
+    this.camera.position.set(16,30,28);this.controls.target.set(0,.15,0);this.controls.update();this.controls.saveState();
     this.raycaster=new T.Raycaster();this.pointer=new T.Vector2();this.plane=new T.Plane(new T.Vector3(0,1,0),0);this.hitPoint=new T.Vector3();this.projected=new T.Vector3();
     const ring=new T.Mesh(new T.RingGeometry(.38,.44,40),new T.MeshBasicMaterial({color:'#d8ac54',side:T.DoubleSide,transparent:true,opacity:.9}));ring.rotation.x=-Math.PI/2;ring.position.y=.12;this.scene.add(ring);this.selection=ring;
     this.destination=ring.clone();this.destination.material=new T.MeshBasicMaterial({color:'#6caaa0',side:T.DoubleSide,transparent:true,opacity:.8});this.scene.add(this.destination);this.destination.visible=false;
@@ -72,12 +72,12 @@ class OfficeView {
       // Drain residual orbit damping before restoring the saved camera pose.
       this.controls.enableDamping=false;this.controls.update();this.controls.reset();this.controls.enableDamping=true;sim.zoom=1;document.querySelector('#zoom-value').textContent='100%';sim.hint('视角已复位 · 拖动旋转，滚轮或双指缩放');};
     // Resize the drawing buffer to its CSS viewport, including panel and mobile changes.
-    this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(this.canvas.parentElement);this.resize();
+    this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(this.canvas.parentElement);window.addEventListener('resize',()=>this.resize());this.resize();
   }
   resize() {
     const r=this.canvas.parentElement.getBoundingClientRect();if(!r.width||!r.height)return;
     this.width=r.width;this.height=r.height;this.renderer.setSize(r.width,r.height,false);
-    const aspect=r.width/r.height, halfHeight=Math.max(10.8,15.5/aspect);this.camera.left=-halfHeight*aspect;this.camera.right=halfHeight*aspect;this.camera.top=halfHeight;this.camera.bottom=-halfHeight;this.camera.updateProjectionMatrix();
+    const aspect=r.width/r.height, halfHeight=Math.max(14.2,21/aspect);this.camera.left=-halfHeight*aspect;this.camera.right=halfHeight*aspect;this.camera.top=halfHeight;this.camera.bottom=-halfHeight;this.camera.updateProjectionMatrix();
   }
   setZoom(value) {this.camera.zoom=T.MathUtils.clamp(value,.65,2.8);this.camera.updateProjectionMatrix();this.sim.zoom=this.camera.zoom;return Math.round(this.camera.zoom*100);}
   pick(e) {

@@ -1,3 +1,4 @@
+import { setPanelOpen, setComposerOpen } from './display.js';
 import { OfficeScene, portrait } from './scene-3d.js';
 const $ = q => document.querySelector(q);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -16,7 +17,7 @@ async function post(url, data) {
   const result = await res.json(); if (!res.ok) throw new Error(result.error || '请求未完成'); return result;
 }
 function select(id) { selected = id; scene?.setSelected(id); setTab('profile'); renderRoster(); }
-function setTab(value) { tab = value; document.querySelectorAll('.tab').forEach(b => { b.classList.toggle('active', b.dataset.tab === tab); b.setAttribute('aria-selected', b.dataset.tab === tab); }); renderPanel(); $('#panel-content').scrollTop = 0; }
+function setTab(value) { setPanelOpen(true); tab = value; document.querySelectorAll('[data-view]').forEach(b => b.classList.toggle('selected', b.dataset.view === (value === 'profile' ? 'team' : value))); document.querySelectorAll('.tab').forEach(b => { b.classList.toggle('active', b.dataset.tab === tab); b.setAttribute('aria-selected', b.dataset.tab === tab); }); renderPanel(); $('#panel-content').scrollTop = 0; }
 function renderRoster() {
   const roster = $('#roster'); roster.replaceChildren();
   const activeTask = state.tasks.find(t => t.status === 'running');
@@ -35,6 +36,7 @@ function renderState() {
   $('#submit-task').disabled = Boolean(current || state.tasks.some(t => t.status === 'queued'));
   $('#submit-task').innerHTML = current ? '团队协作中 <span>◌</span>' : '交给团队 <span>↗</span>';
   renderRoster(); renderPanel();
+  if (state.approvals.length) setPanelOpen(true);
   renderSceneMode();
 }
 function renderSceneMode() {
@@ -157,7 +159,7 @@ function showApproval(approval) {
 function clock() { const date = new Date(); $('#clock').textContent = date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false }); $('#date').textContent = date.toLocaleDateString('zh-CN', { weekday: 'long', month: 'long', day: 'numeric' }).replace('日', '日 · '); }
 clock(); setInterval(clock, 30000);
 document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => setTab(b.dataset.tab));
-document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { document.querySelectorAll('[data-view]').forEach(x => x.classList.toggle('selected', x === b)); setTab(b.dataset.view === 'tasks' ? 'tasks' : b.dataset.view === 'team' ? 'profile' : 'feed'); });
+document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { document.querySelectorAll('[data-view]').forEach(x => x.classList.toggle('selected', x === b)); if (b.dataset.view === 'office') setPanelOpen(false); else setTab(b.dataset.view === 'tasks' ? 'tasks' : b.dataset.view === 'team' ? 'profile' : 'feed'); });
 $('#settings').onclick = showSettings;
 $('#demo-mode').onclick = () => setMode('demo'); $('#live-mode').onclick = () => setMode('live');
 $('#modal-close').onclick = () => $('#modal').close();
@@ -167,7 +169,7 @@ document.querySelectorAll('[data-prompt]').forEach(b => b.onclick = () => { $('#
 $('#task-form').addEventListener('submit', async e => {
   e.preventDefault(); const title = $('#task-input').value.trim(); if (!title) { $('#task-input').focus(); return; }
   $('#submit-task').disabled = true;
-  try { await post('/api/tasks', { title, mode }); $('#task-input').value = ''; streamText.clear(); setTab('tasks'); scene.say('vision', mode === 'demo' ? '开始一次协作演示。' : '收到，我们一起把它完成。'); }
+  try { await post('/api/tasks', { title, mode }); $('#task-input').value = ''; streamText.clear(); setComposerOpen(false); setTab('tasks'); scene.say('vision', mode === 'demo' ? '开始一次协作演示。' : '收到，我们一起把它完成。'); }
   catch (e) { toast(e.message); $('#submit-task').disabled = false; }
 });
 $('#life-toggle').onclick = () => { scene.setPaused(!scene.paused); $('#life-toggle').textContent = scene.paused ? '▷ 继续生活' : 'Ⅱ 暂停生活'; $('#life-toggle').setAttribute('aria-pressed', scene.paused); toast(scene.paused ? '生活动画已暂停，后台任务继续运行' : '伙伴们继续活动'); };

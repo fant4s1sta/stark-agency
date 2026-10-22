@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, session } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, screen, session } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startBackend, type Backend } from './backend.js';
@@ -52,6 +52,14 @@ else {
       }
       return { version: app.getVersion(), platform: process.platform };
     });
+    ipcMain.handle('app:toggle-fullscreen', event => {
+      if (!window || event.sender !== window.webContents || event.senderFrame !== window.webContents.mainFrame || new URL(event.senderFrame.url).origin !== backend?.url) {
+        throw new Error('无效的桌面调用来源');
+      }
+      const fullscreen = !window.isFullScreen();
+      window.setFullScreen(fullscreen);
+      return fullscreen;
+    });
     // Remove the native menu entirely, including the Alt-key menu on Windows/Linux.
     Menu.setApplicationMenu(null);
     await createWindow();
@@ -61,15 +69,25 @@ else {
 async function createWindow() {
   if (!backend) throw new Error('后台服务尚未启动');
   const origin = backend.url;
+  const workArea = screen.getPrimaryDisplay().workAreaSize;
+  const scale = Math.min(0.9, (workArea.width - 40) / 1600, (workArea.height - 80) / 1000);
   const created = new BrowserWindow({
-    title: 'Stark Agency', width: 1440, height: 1000, minWidth: 900, minHeight: 640,
-    backgroundColor: '#f6f4ee', show: false,
+    title: 'Stark Agency', width: Math.round(1600 * scale), height: Math.round(1000 * scale),
+    useContentSize: true, minWidth: 800, minHeight: 500, fullscreenable: true,
+    backgroundColor: '#242d29', show: false,
     webPreferences: {
       preload: path.join(directory, '../preload/index.cjs'),
       contextIsolation: true, nodeIntegration: false, sandbox: true, webviewTag: false,
     },
   });
   window = created;
+  // Lock the content ratio during native resizing; the renderer also letterboxes
+  // fullscreen/maximized sizes and platforms that do not enforce aspect ratios.
+  created.setAspectRatio(16 / 10);
+  created.webContents.setVisualZoomLevelLimits(1, 1);
+  const notifyFullscreen = () => created.webContents.send('app:fullscreen-changed', created.isFullScreen());
+  created.on('enter-full-screen', notifyFullscreen);
+  created.on('leave-full-screen', notifyFullscreen);
   created.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   const blockNavigation = (event: Electron.Event, target: string) => {
     if (new URL(target).origin !== origin) event.preventDefault();
